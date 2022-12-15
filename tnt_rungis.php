@@ -5,12 +5,12 @@
     include_once('model/getStatut.php');
 
         $username = 'jbernardi@vedis.pro';
-        $password = 'Vedis@94150';
+        $password = 'Vedis@94150'; 
         $wsse_header = new WsseAuthHeader($username, $password);
         
         $marqueur = $manager->selectionUnique2('numCommand',array('*'),"marqueur <> ''");
         $allArticle = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis'");
-        $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur;
+        $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur;l
         $commands = array();
         if(count($marqueur) > 0){
             $marqueur = (int)($marqueur[0]->marqueur);
@@ -25,7 +25,7 @@
         }else{
             $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis' LIMIT 100");
         }
-        
+       
     //*****************************************save in bdd ********************************** */
         try{
             $compteur = 0;
@@ -44,7 +44,7 @@
                         }else{
                             $ref = "$bl";
                         }
-                        $status = getShortStatut($wsse_header,$ref);
+                        $status = getShortStatut($wsse_header,$ref,'03803869');
                         if($status !=''){
                            $status0 = mb_substr($status, 0, 11, 'UTF-8');
                             $recup = $manager->selectionUnique2('suivi_expedition_tnt_rungis',array('*'),"ref=$ref");

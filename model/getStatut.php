@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/html; charset=utf-8");
 		
-    function getShortStatut($wsse_header,$ref){
+    function getShortStatut($wsse_header,$ref,$account){
         $wsdl = "https://www.tnt.fr/service/?wsdl";
         $getTracking = new SoapClient($wsdl, array(
             //"trace" => 1,
@@ -11,7 +11,7 @@ header("Content-Type: text/html; charset=utf-8");
         );
         $getTracking->__setSoapHeaders(array($wsse_header));
         $params = array(
-            'accountNumber' =>'08912866',
+            'accountNumber' =>$account, //08912866 marseille
             'reference' =>$ref //00925294  //00925335
         );
         $result = $getTracking->__soapCall("trackingByReference",array($params));

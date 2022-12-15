@@ -44,7 +44,7 @@
                         }else{
                             $ref = "$bl";
                         }
-                        $status = getShortStatut($wsse_header,$ref);
+                        $status = getShortStatut($wsse_header,$ref,'08912866');
                         if($status !=''){
                            $status0 = mb_substr($status, 0, 11, 'UTF-8');
                             $recup = $manager->selectionUnique2('suivi_expedition_tnt',array('*'),"ref=$ref");
