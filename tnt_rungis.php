@@ -25,7 +25,7 @@
         }else{
             $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis' LIMIT 100");
         }
-       
+        
     //*****************************************save in bdd ********************************** */
         try{
             $compteur = 0;
