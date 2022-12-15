@@ -17,7 +17,7 @@ header("Content-Type: text/html; charset=utf-8");
         $getTracking->__setSoapHeaders(array($wsse_header));
         $params = array(
             'accountNumber' =>'08912866',
-            'reference' =>$ref //00925294  //00925335
+            'reference' =>'00925335' //00925294  //00925335
         );
         $result = $getTracking->__soapCall("trackingByReference",array($params));
         $object_encoded = json_encode($result);
@@ -30,23 +30,27 @@ header("Content-Type: text/html; charset=utf-8");
             //     $shortStatut = $object_decoded['Parcel']['shortStatus'];
             //     echo substr($shortStatut, 0, 11);
             // }
-            if($object_decoded['Parcel'][0]){
-                $longStatut = $object_decoded['Parcel'][0]['longStatus'][0];
-                if($longStatut == 'V'){
-                    $shortStatut = $object_decoded['Parcel'][0]['shortStatus'];
-                    return $shortStatut;
-                }else{
-                    return $longStatut;
-                }
-            }else if($object_decoded['Parcel']['shortStatus']){
-                $longStatut = $object_decoded['Parcel']['longStatus'][0];
-                if($longStatut == 'V'){
-                    $shortStatut = $object_decoded['Parcel']['shortStatus'];
-                    return $shortStatut;
-                }else{
-                    return $longStatut;
-                }
-            }
+            // if($object_decoded['Parcel'][0]){
+            //     $longStatut = $object_decoded['Parcel'][0]['longStatus'][0];
+            //     if($longStatut == 'V'){
+            //         $shortStatut = $object_decoded['Parcel'][0]['shortStatus'];
+            //         return $shortStatut;
+            //     }else{
+            //         return $longStatut;
+            //     }
+            // }else if($object_decoded['Parcel']['shortStatus']){
+            //     $longStatut = $object_decoded['Parcel']['longStatus'][0];
+            //     if($longStatut == 'V'){
+            //         $shortStatut = $object_decoded['Parcel']['shortStatus'];
+            //         return $shortStatut;
+            //     }else{
+            //         return $longStatut;
+            //     }
+            // }
+
+            echo '<pre>';
+                print_r($object_decoded);
+            echo '</pre>';
             return '';
         }
     }

@@ -2,11 +2,6 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/html; charset=utf-8");
 		
-   
-	$username = 'quincaillerie.feraud@gmail.com';
-	$password = '@Tnt_13';
-	$wsse_header = new WsseAuthHeader($username, $password);
-   
     function getShortStatut($wsse_header,$ref){
         $wsdl = "https://www.tnt.fr/service/?wsdl";
         $getTracking = new SoapClient($wsdl, array(
@@ -32,7 +27,7 @@ header("Content-Type: text/html; charset=utf-8");
             // }
             if($object_decoded['Parcel'][0]){
                 $longStatut = $object_decoded['Parcel'][0]['longStatus'][0];
-                if($longStatut == 'V'){
+                if(strlen($longStatut) == 1){
                     $shortStatut = $object_decoded['Parcel'][0]['shortStatus'];
                     return $shortStatut;
                 }else{

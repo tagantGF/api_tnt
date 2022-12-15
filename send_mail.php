@@ -57,7 +57,7 @@ try {
                     Ce mail est envoyé automatiquement pour vous avertir du statut de livraison, vous serez notifié à chaque changement d’état.<br><br>
                     Le statut de votre commande $libCmd est : <b>$statut</b><br><br>
                     Le transporteur du colis est : <b>TNT Express</b><br><br>
-                    Ne pas faire répondre, en cas de problème ou pour toutes questions, veuillez nous écrire à <a href='mailto:adv@groupe-feraud.com'>adv@groupe-feraud.com</a><br><br>
+                    Ne pas faire répondre, en cas de problème ou pour toutes questions, veuillez nous écrire à <a href='mailto:Suivi-livraison@groupe-feraud.com'>Suivi-livraison@groupe-feraud.com</a><br><br>
                     L’équipe Feraud vous souhaite une bonne journée.";
                     
     //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';

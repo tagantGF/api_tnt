@@ -4,12 +4,12 @@
     include_once('model/bigModelForMe.php');
     include_once('model/getStatut.php');
 
-        $username = 'quincaillerie.feraud@gmail.com';
-        $password = '@Tnt_13';
+        $username = 'jbernardi@vedis.pro';
+        $password = 'Vedis@94150';
         $wsse_header = new WsseAuthHeader($username, $password);
-
+        
         $marqueur = $manager->selectionUnique2('numCommand',array('*'),"marqueur <> ''");
-        $allArticle = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Marseille'");
+        $allArticle = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis'");
         $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur;
         $commands = array();
         if(count($marqueur) > 0){
@@ -21,9 +21,9 @@
             if($marqueur == $lastTntCmd){
                 $marqueur = 0;
             }
-            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Marseille' AND num_cmd > $marqueur LIMIT 100");
+            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis' AND num_cmd > $marqueur LIMIT 100");
         }else{
-            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Marseille' LIMIT 100");
+            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis' LIMIT 100");
         }
        
     //*****************************************save in bdd ********************************** */
@@ -47,7 +47,7 @@
                         $status = getShortStatut($wsse_header,$ref);
                         if($status !=''){
                            $status0 = mb_substr($status, 0, 11, 'UTF-8');
-                            $recup = $manager->selectionUnique2('suivi_expedition_tnt',array('*'),"ref=$ref");
+                            $recup = $manager->selectionUnique2('suivi_expedition_tnt_rungis',array('*'),"ref=$ref");
                             if(count($recup) == 0){
                                 if($status0 == "Colis livré" || $status == 'Livré'){
                                     if(count($commands) == $compteur){
@@ -63,7 +63,7 @@
                                         'send'=>"true"
                                     );
                                     redirectTo($status,$email,$numcmd);
-                                    $manager->insertion('suivi_expedition_tnt',$table,'');
+                                    $manager->insertion('suivi_expedition_tnt_rungis',$table,'');
                                 }else{
                                     if(count($commands) == $compteur){
                                         $table0 = array(
@@ -78,7 +78,7 @@
                                         'send'=>"false"
                                     );
                                     redirectTo($status,$email,$numcmd);
-                                    $manager->insertion('suivi_expedition_tnt',$table,'');
+                                    $manager->insertion('suivi_expedition_tnt_rungis',$table,'');
                                 }
                             }else{
                                 if($status != $recup[0]->status){
@@ -95,7 +95,7 @@
                                         );
                                         $num_s_tnt = $recup[0]->num_s_tnt;
                                         redirectTo($status,$email,$numcmd);
-                                        $manager->modifier('suivi_expedition_tnt',$table,"num_s_tnt=$num_s_tnt");
+                                        $manager->modifier('suivi_expedition_tnt_rungis',$table,"num_s_tnt=$num_s_tnt");
                                     }else{
                                         if(count($commands) == $compteur){
                                             $table0 = array(
@@ -109,7 +109,7 @@
                                         );
                                         $num_s_tnt = $recup[0]->num_s_tnt;
                                         redirectTo($status,$email,$numcmd);
-                                        $manager->modifier('suivi_expedition_tnt',$table,"num_s_tnt=$num_s_tnt");
+                                        $manager->modifier('suivi_expedition_tnt_rungis',$table,"num_s_tnt=$num_s_tnt");
                                     }
                                 }else{
                                     if(count($commands) == $compteur){
