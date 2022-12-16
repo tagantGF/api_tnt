@@ -27,19 +27,21 @@ header("Content-Type: text/html; charset=utf-8");
             // }
             if($object_decoded['Parcel'][0]){
                 $longStatut = $object_decoded['Parcel'][0]['longStatus'][0];
+                $bonTransport = $object_decoded['Parcel'][0]['consignmentNumber'];
                 if(strlen($longStatut) == 1){
                     $shortStatut = $object_decoded['Parcel'][0]['shortStatus'];
-                    return $shortStatut;
+                    return array($shortStatut,$bonTransport);
                 }else{
-                    return $longStatut;
+                    return array($longStatut,$bonTransport);
                 }
             }else if($object_decoded['Parcel']['shortStatus']){
                 $longStatut = $object_decoded['Parcel']['longStatus'][0];
+                $bonTransport = $object_decoded['Parcel']['consignmentNumber'];
                 if(strlen($longStatut) == 1){
                     $shortStatut = $object_decoded['Parcel']['shortStatus'];
-                    return $shortStatut;
+                    return array($shortStatut,$bonTransport);
                 }else{
-                    return $longStatut;
+                    return array($longStatut,$bonTransport);
                 }
             }
         }else{

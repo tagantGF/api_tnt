@@ -8,10 +8,21 @@ use PHPMailer\PHPMailer\Exception;
 //require 'vendor/autoload.php';
 $statut = $_GET['statut'];
 $leMail = $_GET['mail'];
+$town = $_GET['town'];
+$bonTransport =  $_GET['bonTransport'];
+$url_suivi_coli = "https://www.tnt.fr/public/suivi_colis/recherche/visubontransport.do?bonTransport=$bonTransport&bonTransportTemp=&radiochoixrecherche=BT&radiochoixtypeexpedition=NAT&refInterneInt="
 $numCommand = $_GET['numCommand'];
+$mailContact = '';
 $libCmd = '';
 if(!in_array($numCommand,[null,""])){
     $libCmd = "N° $numCommand";
+}
+if($town == 'Marseille'){
+    $mailContact = 'suivi-livraison-marseille@groupe-feraud.com';
+}else if($town == 'Nice'){
+    $mailContact = 'Suivi-livraison-nice@groupe-feraud.com';
+}else if($town == 'Rungis'){
+    $mailContact = 'suivi-livraison-rungis@groupe-feraud.com';
 }
 //$leMail = "falahometest@gmail.com";
 
@@ -33,13 +44,13 @@ try {
     $mail->SMTPDebug = 0;  //SMTP::DEBUG_SERVER;                      //Enable verbose debug output
     $mail->Host = 'smtp.office365.com';                     //Set the SMTP server to send through
     //                                //Enable SMTP authentication
-    $mail->Username = 'no-reply@groupe-feraud.com';                     //SMTP username
-    $mail->Password = 'S@p@ig57';                               //SMTP password
+    $mail->Username = 'mail-auto@groupe-feraud.com';                     //SMTP username
+    $mail->Password = 'pqcnQWRT9979';                               //SMTP password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
     $mail->Port = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
    
     //Recipients
-    $mail->setFrom('no-reply@groupe-feraud.com', 'Suivi de commande Feraud');
+    $mail->setFrom('mail-auto@groupe-feraud.com', 'Suivi de commande Feraud');
     $mail->addAddress($leMail, 'Client');     //Add a recipient
     //$mail->addAddress('j.caline@groupe-feraud.com');               //Name is optional
     //$mail->addReplyTo('info@example.com', 'Information');
@@ -57,7 +68,8 @@ try {
                     Ce mail est envoyé automatiquement pour vous avertir du statut de livraison, vous serez notifié à chaque changement d’état.<br><br>
                     Le statut de votre commande $libCmd est : <b>$statut</b><br><br>
                     Le transporteur du colis est : <b>TNT Express</b><br><br>
-                    Ne pas faire répondre, en cas de problème ou pour toutes questions, veuillez nous écrire à <a href='mailto:Suivi-livraison@groupe-feraud.com'>Suivi-livraison@groupe-feraud.com</a><br><br>
+                    Vous pouvez suivre votre colis à cette adresse : <a href='mailto:$url_suivi_coli'>Lien de suivi TNT</a><br><br>
+                    Ne pas faire répondre, en cas de problème ou pour toutes questions, veuillez nous écrire à <a href='mailto:$mailContact'>$mailContact</a><br><br>
                     L’équipe Feraud vous souhaite une bonne journée.";
                     
     //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
@@ -65,7 +77,7 @@ try {
     $mail->CharSet = 'UTF-8';
 	$mail->Encoding = 'base64';
 
-    $mail->send();
+    //$mail->send();
     echo 'Message has been sent';
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";

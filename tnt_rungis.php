@@ -10,7 +10,7 @@
         
         $marqueur = $manager->selectionUnique2('numCommand',array('*'),"marqueur <> ''");
         $allArticle = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Rungis'");
-        $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur;l
+        $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur;
         $commands = array();
         if(count($marqueur) > 0){
             $marqueur = (int)($marqueur[0]->marqueur);
@@ -45,6 +45,8 @@
                             $ref = "$bl";
                         }
                         $status = getShortStatut($wsse_header,$ref,'03803869');
+                        $status = $status[0];
+                        $bonTransport = $status[1];
                         if($status !=''){
                            $status0 = mb_substr($status, 0, 11, 'UTF-8');
                             $recup = $manager->selectionUnique2('suivi_expedition_tnt_rungis',array('*'),"ref=$ref");
@@ -60,9 +62,10 @@
                                         'status'=>"$status",
                                         'numcmd'=>"$numcmd",
                                         'ref'=>$ref,
+                                        'bonTransport'=>$bonTransport,
                                         'send'=>"true"
                                     );
-                                    redirectTo($status,$email,$numcmd);
+                                    //redirectTo($status,$email,$numcmd,$bonTransport);
                                     $manager->insertion('suivi_expedition_tnt_rungis',$table,'');
                                 }else{
                                     if(count($commands) == $compteur){
@@ -75,9 +78,10 @@
                                         'status'=>"$status",
                                         'numcmd'=>"$numcmd",
                                         'ref'=>$ref,
+                                        'bonTransport'=>$bonTransport,
                                         'send'=>"false"
                                     );
-                                    redirectTo($status,$email,$numcmd);
+                                    //redirectTo($status,$email,$numcmd,$bonTransport);
                                     $manager->insertion('suivi_expedition_tnt_rungis',$table,'');
                                 }
                             }else{
@@ -94,7 +98,7 @@
                                             'send'=>"true"
                                         );
                                         $num_s_tnt = $recup[0]->num_s_tnt;
-                                        redirectTo($status,$email,$numcmd);
+                                        //redirectTo($status,$email,$numcmd,$bonTransport);
                                         $manager->modifier('suivi_expedition_tnt_rungis',$table,"num_s_tnt=$num_s_tnt");
                                     }else{
                                         if(count($commands) == $compteur){
@@ -108,7 +112,7 @@
                                             'send'=>"false"
                                         );
                                         $num_s_tnt = $recup[0]->num_s_tnt;
-                                        redirectTo($status,$email,$numcmd);
+                                        //redirectTo($status,$email,$numcmd,$bonTransport);
                                         $manager->modifier('suivi_expedition_tnt_rungis',$table,"num_s_tnt=$num_s_tnt");
                                     }
                                 }else{
@@ -173,11 +177,11 @@
         }
     //**************************************************************************************************** */
     //*******************************send mail function********************************************* */
-        function redirectTo($statut,$email,$numcmd){
+        function redirectTo($statut,$email,$numcmd,$bonTransport){
             $ch = curl_init();
             // define options
             $optArray = array(
-                CURLOPT_URL => "https://it-feraud.com/api_tnt/send_mail.php?statut=$statut&mail=$email&numCommand=$numcmd",
+                CURLOPT_URL => "https://it-feraud.com/api_tnt/send_mail.php?statut=$statut&mail=$email&numCommand=$numcmd&town=Rungis&bonTransport=$bonTransport",
                 CURLOPT_RETURNTRANSFER => true
             );
             // apply those options
