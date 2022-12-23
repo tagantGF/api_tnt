@@ -50,7 +50,7 @@
                         $bonTransport = $statusInit[1];
                         if($status !=''){
                            $status0 = mb_substr($status, 0, 11, 'UTF-8');
-                            $recup = $manager->selectionUnique2('suivi_expedition_tnt_nice',array('*'),"ref=$ref");
+                            $recup = $manager->selectionUnique2('suivi_expedition_tnt_nice',array('*'),"ref LIKE '%$ref%'");
                             if(count($recup) == 0){
                                 if($status0 == "Colis livré" || $status == 'Livré'){
                                     if(count($commands) == $compteur){

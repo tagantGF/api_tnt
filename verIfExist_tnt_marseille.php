@@ -19,7 +19,7 @@
 
         $marqueur = $manager->selectionUnique2('numCommand',array('*'),"verifexisttntmarseille <> ''");
         $allArticle = $manager->selectionUnique2('numCommand',array('*'),"transporteur='eurocoop'");
-        $lastTntCmd = $allArticle[count($allArticle)-1]->verifexisttntmarseille;
+        $lastEurocoopCmd = $allArticle[count($allArticle)-1]->verifexisttntmarseille;
         $commands = array();
         if(count($marqueur) > 0){
             $marqueur = (int)($marqueur[0]->verifexisttntmarseille); 
@@ -27,14 +27,17 @@
                 'verifexisttntmarseille'=>""
             );
             $yu = $manager->modifier('numCommand',$table0,"verifexisttntmarseille='$marqueur'");
-            if($marqueur == $lastTntCmd){
+            if($marqueur == $lastEurocoopCmd){
                 $marqueur = 0;
             }
-            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='eurocoop' AND num_cmd > $marqueur LIMIT 500");
+            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='eurocoop' AND num_cmd > $marqueur LIMIT 200");
         }else{
-            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='eurocoop' LIMIT 500");
+            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='eurocoop' LIMIT 200");
         }
-        
+        // $table0 = array(
+        //     'verifexisttntmarseille'=>"726"
+        // );
+        // $t = $manager->modifier('numCommand',$table0,"num_cmd LIKE '%726%'");
         // echo '<pre>';
         //     print_r($commands);
         // echo '</pre>';
@@ -45,14 +48,15 @@
             foreach($val as $key2=>$val2){
                 if($key2 == "bl"){
                     $bl = $val2;
-                    if($c == 500){
+                    getTransporteur($bl,$wsse_header_marseille,$num);
+                    if(count($commands) == $key+1){
+                        echo $num;
                         $table0 = array(
-                            'verifexisttntmarseille'=>"$num"
+                            'verifexisttntmarseille'=>"'$num'"
                         );
-                        $t = $manager->modifier('numCommand',$table0,"num_cmd LIKE %$num%");
-                       
+                        $t = $manager->modifier('numCommand',$table0,"num_cmd LIKE '%$num%'");
+                        break;
                     }
-                    //getTransporteur($bl,$wsse_header_marseille,$num);
                 }
                 else if($key2 == "num_cmd"){
                     $num = $val2;
