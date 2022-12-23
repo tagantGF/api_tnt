@@ -3,10 +3,10 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/html; charset=utf-8");
 		
     function getShortStatut($wsse_header,$ref,$account){
-        $wsdl = "https://www.tnt.fr/service/?wsdl";
+        $wsdl = "http://www.tnt.fr/service/?wsdl";
         $getTracking = new SoapClient($wsdl, array(
-            //"trace" => 1,
-            //"exceptions" => 0
+            "trace" => 1,
+            "exceptions" => 0
             )
         );
         $getTracking->__setSoapHeaders(array($wsse_header));

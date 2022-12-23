@@ -8,20 +8,20 @@
         $password = 'Agence06';
         $wsse_header = new WsseAuthHeader($username, $password);
         
-        $marqueur = $manager->selectionUnique2('numCommand',array('*'),"marqueur <> ''");
+        $marqueur_nice = $manager->selectionUnique2('numCommand',array('*'),"marqueur_nice <> ''");
         $allArticle = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Nice'");
-        $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur;
+        $lastTntCmd = $allArticle[count($allArticle)-1]->marqueur_nice;
         $commands = array();
-        if(count($marqueur) > 0){
-            $marqueur = (int)($marqueur[0]->marqueur);
+        if(count($marqueur_nice) > 0){
+            $marqueur_nice = (int)($marqueur_nice[0]->marqueur_nice);
             $table0 = array(
-                'marqueur'=>""
+                'marqueur_nice'=>""
             );
-            $manager->modifier('numCommand',$table0,"marqueur='$marqueur'");
-            if($marqueur == $lastTntCmd){
-                $marqueur = 0;
+            $manager->modifier('numCommand',$table0,"marqueur_nice='$marqueur_nice'");
+            if($marqueur_nice == $lastTntCmd){
+                $marqueur_nice = 0;
             }
-            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Nice' AND num_cmd > $marqueur LIMIT 100");
+            $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Nice' AND num_cmd > $marqueur_nice LIMIT 100");
         }else{
             $commands = $manager->selectionUnique2('numCommand',array('*'),"transporteur='tnt' AND ville='Nice' LIMIT 100");
         }
@@ -35,6 +35,7 @@
                 $numcmd = '';
                 $ref = '';
                 $email = '';
+                $code_chantier = '';
                 $id = 0;
                 foreach($val as $key2=>$val2){
                     if($key2 == "bl"){
@@ -44,9 +45,9 @@
                         }else{
                             $ref = "$bl";
                         }
-                        $status = getShortStatut($wsse_header,$ref,'08950259');
-                        $status = $status[0];
-                        $bonTransport = $status[1];
+                        $statusInit = getShortStatut($wsse_header,$ref,'08950259');
+                        $status = $statusInit[0];
+                        $bonTransport = $statusInit[1];
                         if($status !=''){
                            $status0 = mb_substr($status, 0, 11, 'UTF-8');
                             $recup = $manager->selectionUnique2('suivi_expedition_tnt_nice',array('*'),"ref=$ref");
@@ -54,7 +55,7 @@
                                 if($status0 == "Colis livré" || $status == 'Livré'){
                                     if(count($commands) == $compteur){
                                         $table0 = array(
-                                            'marqueur'=>"$id"
+                                            'marqueur_nice'=>"$id"
                                         );
                                         $manager->modifier('numCommand',$table0,"num_cmd=$id");
                                     }
@@ -65,12 +66,12 @@
                                         'bonTransport'=>$bonTransport,
                                         'send'=>"true"
                                     );
-                                    //redirectTo($status,$email,$numcmd,$bonTransport);
+                                    redirectTo($status,$email,$numcmd,$bonTransport,$code_chantier);
                                     $manager->insertion('suivi_expedition_tnt_nice',$table,'');
                                 }else{
                                     if(count($commands) == $compteur){
                                         $table0 = array(
-                                            'marqueur'=>"$id"
+                                            'marqueur_nice'=>"$id"
                                         );
                                         $manager->modifier('numCommand',$table0,"num_cmd=$id");
                                     }
@@ -81,7 +82,7 @@
                                         'bonTransport'=>$bonTransport,
                                         'send'=>"false"
                                     );
-                                    //redirectTo($status,$email,$numcmd,$bonTransport);
+                                   redirectTo($status,$email,$numcmd,$bonTransport,$code_chantier);
                                     $manager->insertion('suivi_expedition_tnt_nice',$table,'');
                                 }
                             }else{
@@ -89,7 +90,7 @@
                                     if(mb_substr($status, 0, 11, 'UTF-8') == "Colis livré" || $status == 'Livré'){
                                         if(count($commands) == $compteur){
                                             $table0 = array(
-                                                'marqueur'=>"$id"
+                                                'marqueur_nice'=>"$id"
                                             );
                                             $manager->modifier('numCommand',$table0,"num_cmd=$id");
                                         }
@@ -98,12 +99,12 @@
                                             'send'=>"true"
                                         );
                                         $num_s_tnt = $recup[0]->num_s_tnt;
-                                        //redirectTo($status,$email,$numcmd,$bonTransport);
+                                        redirectTo($status,$email,$numcmd,$bonTransport,$code_chantier);
                                         $manager->modifier('suivi_expedition_tnt_nice',$table,"num_s_tnt=$num_s_tnt");
                                     }else{
                                         if(count($commands) == $compteur){
                                             $table0 = array(
-                                                'marqueur'=>"$id"
+                                                'marqueur_nice'=>"$id"
                                             );
                                             $manager->modifier('numCommand',$table0,"num_cmd=$id");
                                         }
@@ -112,13 +113,13 @@
                                             'send'=>"false"
                                         );
                                         $num_s_tnt = $recup[0]->num_s_tnt;
-                                        //redirectTo($status,$email,$numcmd,$bonTransport);
+                                        redirectTo($status,$email,$numcmd,$bonTransport,$code_chantier);
                                         $manager->modifier('suivi_expedition_tnt_nice',$table,"num_s_tnt=$num_s_tnt"); 
                                     }
                                 }else{
                                     if(count($commands) == $compteur){
                                         $table0 = array(
-                                            'marqueur'=>"$id"
+                                            'marqueur_nice'=>"$id"
                                         );
                                         $manager->modifier('numCommand',$table0,"num_cmd=$id");
                                     }
@@ -135,6 +136,8 @@
                         }
                     }else if($key2 == "num_cmd"){
                         $id = $val2;
+                    }else if($key2 == "code_chantier"){
+                        $code_chantier = $val2;
                     }
                 }
             }

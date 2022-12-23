@@ -1,59 +1,62 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/html; charset=utf-8");
-		
-   
-    $username = 'jbernardi@vedis.pro';
-    $password = 'Vedis@94150';
-	$wsse_header = new WsseAuthHeader($username, $password);
-    echo getShortStatut($wsse_header,'00928451');
-    function getShortStatut($wsse_header,$ref){
-        $wsdl = "https://www.tnt.fr/service/?wsdl";
+	
+    $username = 'quincaillerie.feraud@gmail.com';
+    $password = '@Tnt_13';
+    $wsse_header = new WsseAuthHeader($username, $password);
+    $tt = getShortStatut($wsse_header,'00926655','08912866');
+    echo '<pre>';
+        print_r($tt);
+    echo '</pre>';
+    function getShortStatut($wsse_header,$ref,$account){
+        $wsdl = "http://www.tnt.fr/service/?wsdl";
         $getTracking = new SoapClient($wsdl, array(
-            //"trace" => 1,
-            //"exceptions" => 0
+            "trace" => 1,
+            "exceptions" => 0
             )
         );
         $getTracking->__setSoapHeaders(array($wsse_header));
         $params = array(
-            'accountNumber' =>'03803869',
-            'reference' =>'00928451' //00925294  //00925335
+            'accountNumber' =>$account, //08912866 marseille
+            'reference' =>$ref //00925294  //00925335
         );
+         
         $result = $getTracking->__soapCall("trackingByReference",array($params));
         $object_encoded = json_encode($result);
         $object_decoded = json_decode($object_encoded,true);
-        echo '<pre>';
-            print_r($object_decoded);
-        echo '</pre>';
+        return $result;
         // if(count($object_decoded) >0){
-        //     //  if($object_decoded['Parcel'][0]){
+        //     // if($object_decoded['Parcel'][0]){
         //     //     $shortStatut = $object_decoded['Parcel'][0]['shortStatus'];
-        //     //     echo substr($shortStatut, 0, 11);
+        //     //     return $shortStatut;
         //     // }else if($object_decoded['Parcel']['shortStatus']){
         //     //     $shortStatut = $object_decoded['Parcel']['shortStatus'];
-        //     //     echo substr($shortStatut, 0, 11);
+        //     //     return $shortStatut;
         //     // }
+
+        //    return $object_decoded;
+
         //     // if($object_decoded['Parcel'][0]){
         //     //     $longStatut = $object_decoded['Parcel'][0]['longStatus'][0];
-        //     //     if($longStatut == 'V'){
+        //     //     $bonTransport = $object_decoded['Parcel'][0]['consignmentNumber'];
+        //     //     if(strlen($longStatut) == 1){
         //     //         $shortStatut = $object_decoded['Parcel'][0]['shortStatus'];
-        //     //         return $shortStatut;
+        //     //         return array($shortStatut,$bonTransport);
         //     //     }else{
-        //     //         return $longStatut;
+        //     //         return array($longStatut,$bonTransport);
         //     //     }
         //     // }else if($object_decoded['Parcel']['shortStatus']){
         //     //     $longStatut = $object_decoded['Parcel']['longStatus'][0];
-        //     //     if($longStatut == 'V'){
+        //     //     $bonTransport = $object_decoded['Parcel']['consignmentNumber'];
+        //     //     if(strlen($longStatut) == 1){
         //     //         $shortStatut = $object_decoded['Parcel']['shortStatus'];
-        //     //         return $shortStatut;
+        //     //         return array($shortStatut,$bonTransport);
         //     //     }else{
-        //     //         return $longStatut;
+        //     //         return array($longStatut,$bonTransport);
         //     //     }
         //     // }
-
-        //     echo '<pre>';
-        //         print_r($object_decoded);
-        //     echo '</pre>';
+        // }else{
         //     return '';
         // }
     }
